@@ -15,7 +15,7 @@ import org.dbunit.database.QueryDataSet;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.filter.DefaultColumnFilter;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.After;
 import org.junit.Before;
@@ -29,6 +29,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 
 import br.com.DBUnit.domain.entity.Terceiro;
 import br.com.DBUnit.domain.repository.TerceiroRepository;
+import br.com.DBUnit.infraestructure.DatabaseExport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/applicationContext_test.xml"})
@@ -47,10 +48,9 @@ public class DBUnitTest{
         return connection;
     }
 
-    @SuppressWarnings("deprecation")
-	public IDataSet getDataSet() throws Exception{
-        File file = new File(fileDataSet);
-        return new FlatXmlDataSet(file);
+	public IDataSet getDataSet() throws Exception{    
+        FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
+   		return builder.build(new File(fileDataSet));
     }
     
     @Before
@@ -63,6 +63,12 @@ public class DBUnitTest{
         DatabaseOperation.DELETE_ALL.execute(getConnection(), getDataSet());
     }
 	
+    @Test
+    public void deveExportarABaseDeDados() throws Exception{
+		DatabaseExport export = new DatabaseExport();
+		export.fullExport(getConnection());
+    }
+    
 	@Test
 	public void deveTestarConsultaNoHibernate() throws Exception{
 		Terceiro terceiro = terceiroRepository.get(1L);
@@ -72,11 +78,11 @@ public class DBUnitTest{
 	@Test
 	public void deveUtilizarDBUnit() throws Exception{
         QueryDataSet databaseSet = new QueryDataSet(getConnection());
-        databaseSet.addTable("pessoas", "select * from terceiro where id = 1");
+        databaseSet.addTable("Terceiro", "select * from Terceiro where id = 1");
         ITable actualTable = databaseSet.getTables()[0];
-
-        @SuppressWarnings("deprecation")
-		IDataSet expectedDataSet = new FlatXmlDataSet(new File("DatabaseInMemory/expectedDataSet.xml"));
+      
+        FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
+   		IDataSet expectedDataSet = builder.build(new File("DatabaseInMemory/expectedDataSet.xml"));
         ITable expectedTable = expectedDataSet.getTable("Terceiro");
 
         actualTable = DefaultColumnFilter.includedColumnsTable(actualTable, expectedTable.getTableMetaData().getColumns());
