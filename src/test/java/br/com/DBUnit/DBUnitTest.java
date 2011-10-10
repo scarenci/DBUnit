@@ -9,6 +9,7 @@ import java.sql.Connection;
 
 import javax.sql.DataSource;
 
+import org.dbunit.Assertion;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.database.QueryDataSet;
@@ -87,9 +88,15 @@ public class DBUnitTest{
 
         actualTable = DefaultColumnFilter.includedColumnsTable(actualTable, expectedTable.getTableMetaData().getColumns());
 		
-        assertThat(1,is(expectedTable.getRowCount()));
+        
+        //Comparando número de linhas.
         assertThat(expectedTable.getRowCount(), is(actualTable.getRowCount()));
+        
+        //Comparando valores dos campos da tabela.
         assertThat(expectedTable.getValue(0, "nome"), is(actualTable.getValue(0, "nome")));
+        
+        //Comparando as tabelas encontradas.
+        Assertion.assertEquals(expectedTable, actualTable);
 	}
 	
 	@Autowired
