@@ -77,7 +77,7 @@ public class DBUnitTest{
 	}	
 	
 	@Test
-	public void deveUtilizarDBUnit() throws Exception{
+	public void deveDemonstrarUtilizacaoDoDBUnit() throws Exception{
         QueryDataSet databaseSet = new QueryDataSet(getConnection());
         databaseSet.addTable("Terceiro", "select * from Terceiro where id = 1");
         ITable actualTable = databaseSet.getTables()[0];
@@ -88,7 +88,6 @@ public class DBUnitTest{
 
         actualTable = DefaultColumnFilter.includedColumnsTable(actualTable, expectedTable.getTableMetaData().getColumns());
 		
-        
         //Comparando número de linhas.
         assertThat(expectedTable.getRowCount(), is(actualTable.getRowCount()));
         

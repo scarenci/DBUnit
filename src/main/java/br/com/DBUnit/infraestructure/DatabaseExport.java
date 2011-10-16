@@ -35,8 +35,8 @@ public class DatabaseExport
 
 	public void partialExport(IDatabaseConnection connection) throws Exception{
 		QueryDataSet partialDataSet = new QueryDataSet(connection);
-		partialDataSet.addTable("Terceiro");
-		partialDataSet.addTable("Terceiro", "SELECT * FROM Terceiro WHERE id='1'");
+		partialDataSet.addTable("Terceiro");//exporta a tabela inteira
+		partialDataSet.addTable("Terceiro", "SELECT * FROM Terceiro WHERE id='1'");//exporta o registro espeífico
 		FlatXmlDataSet.write(partialDataSet, new FileOutputStream("partial.xml"));
 	}
 

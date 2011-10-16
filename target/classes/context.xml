@@ -61,4 +61,6 @@
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	
 	<context:annotation-config />
+	
+	<context:component-scan base-package="br.com.DBUnit" />
 </beans>

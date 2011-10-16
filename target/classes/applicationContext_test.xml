@@ -21,6 +21,4 @@
 	
 	<import resource="classpath:context.xml" />
 	
-	<context:component-scan base-package="br.com.DBUnit" />
-	
 </beans>
